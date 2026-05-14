@@ -4,11 +4,11 @@
 
 ---
 
-## 📄 規格書
+## 📄 文件
 
-👉 **[點此開啟完整規格書](https://propsky.github.io/rfid-card-poc/)**
+👉 **[完整規格書](https://propsky.github.io/rfid-card-poc/)** — 資料結構、API 端點、前端模組說明、工作拆解
 
-規格書包含：資料結構、API 端點、前端模組說明、以及完整工作拆解。
+👉 **[UI 線框稿](https://propsky.github.io/rfid-card-poc/ui-wireframe.html)** — 六個頁面的版面與元件配置，工程師實作依據
 
 ---
 

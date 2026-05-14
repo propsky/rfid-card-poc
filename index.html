@@ -484,10 +484,103 @@
     </div>
   </div>
 
+  <!-- ONBOARDING -->
+  <div class="section" id="start" style="margin-bottom: 40px;">
+    <div class="section-label">給工程師</div>
+    <div class="section-title" style="margin-bottom: 20px;">從這裡開始</div>
+
+    <div style="background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; color: #0a3d6b; line-height: 1.8;">
+      你拿到的這份文件是完整的開發規格書。<strong>不需要從頭讀到尾</strong>，按照下面三步走，你就知道要做什麼、長什麼樣子、從哪裡開始動手。
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">1</div>
+      <div style="flex: 1;">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text);">先看 UI 線框稿，搞清楚你要做什麼</div>
+        <div style="background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 14px 18px; font-size: 14px; line-height: 1.8;">
+          <p style="margin-bottom: 10px;">打開線框稿：<a href="https://propsky.github.io/rfid-card-poc/ui-wireframe.html" style="color: var(--accent); font-weight: 700;">ui-wireframe.html</a></p>
+          <p style="margin-bottom: 10px;">這是一個<strong>可以互動的原型</strong>，點上方的頁籤或左側選單可以切換六個頁面。這就是你要做出來的東西長相。</p>
+          <div style="background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px;">
+            <div style="font-weight: 700; margin-bottom: 6px; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">線框稿怎麼看</div>
+            <ul style="padding-left: 16px; color: var(--text-muted); line-height: 2;">
+              <li><strong>版面配置</strong>是參考依據——左側導覽、右側內容區、卡片排列方式都要照做</li>
+              <li><strong>假資料</strong>（王小明、A3F9...等）只是示意，不用照抄</li>
+              <li><strong>顏色與字型</strong>不是最終設計，以乾淨清楚為主即可</li>
+              <li><strong>補發頁面</strong>下方有藍色說明框，描述 Step 1、2、4、5 的畫面邏輯，記得一起看</li>
+              <li>線框稿中所有互動（點按鈕、切頁籤）是示意，實際功能要你在 React 中實作</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">2</div>
+      <div style="flex: 1;">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text);">看任務清單，確認工作順序</div>
+        <div style="background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 14px 18px; font-size: 14px; line-height: 1.8;">
+          <p style="margin-bottom: 10px;">進 GitHub Issues：<a href="https://github.com/propsky/rfid-card-poc/issues" style="color: var(--accent); font-weight: 700;">github.com/propsky/rfid-card-poc/issues</a></p>
+          <p style="margin-bottom: 10px;">你會看到兩個 Issue。<strong>從 Milestone 1 開始</strong>，裡面有逐項任務清單。每完成一項，直接在 Issue 裡打勾（點 checkbox 即可）。Sam 會即時看到你的進度，不需要額外回報。</p>
+          <div style="background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px;">
+            <div style="font-weight: 700; margin-bottom: 6px; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">兩個 Milestone 的關係</div>
+            <ul style="padding-left: 16px; color: var(--text-muted); line-height: 2;">
+              <li><strong>Milestone 1（前端）</strong>：全程用假資料跑通所有畫面，不需要後端，完成後可以直接 demo</li>
+              <li><strong>Milestone 2（後端）</strong>：等 Milestone 1 交件確認後再開始，用 FastAPI 接真實資料</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">3</div>
+      <div style="flex: 1;">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text);">開始動手的第一件事</div>
+        <div style="background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 14px 18px; font-size: 14px; line-height: 1.8;">
+          <p style="margin-bottom: 12px;">打開終端機，建立 React 專案：</p>
+          <div style="background: #1A1917; color: #C0BFBA; border-radius: var(--radius-sm); padding: 12px 16px; font-family: Courier New, monospace; font-size: 12.5px; line-height: 2; margin-bottom: 12px;">
+            <div><span style="color: #5DCAA5;">npm</span> create vite@latest frontend -- --template react</div>
+            <div><span style="color: #5DCAA5;">cd</span> frontend</div>
+            <div><span style="color: #5DCAA5;">npm</span> install react-router-dom</div>
+            <div><span style="color: #5DCAA5;">npm</span> run dev</div>
+          </div>
+          <p style="margin-bottom: 8px;">接著在 <code>src/</code> 下建立這個資料夾結構：</p>
+          <div style="background: #1A1917; color: #C0BFBA; border-radius: var(--radius-sm); padding: 12px 16px; font-family: Courier New, monospace; font-size: 12px; line-height: 1.9; margin-bottom: 12px;">
+            <div>src/</div>
+            <div>&nbsp;&nbsp;├── mock/</div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color: #FAC775;">db.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888780;"># 假資料（存 localStorage）</span></div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span style="color: #FAC775;">api.js</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888780;"># 假 API 函式</span></div>
+            <div>&nbsp;&nbsp;├── pages/</div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color: #85B7EB;">Home.jsx</span></div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color: #85B7EB;">NewCard.jsx</span></div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color: #85B7EB;">Simulator.jsx</span></div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color: #85B7EB;">CardQuery.jsx</span></div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span style="color: #85B7EB;">Reissue.jsx</span></div>
+            <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span style="color: #85B7EB;">Terminals.jsx</span></div>
+            <div>&nbsp;&nbsp;└── components/</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color: #85B7EB;">Layout.jsx</span>&nbsp;&nbsp;<span style="color: #888780;"># 側邊導覽 + 主內容框</span></div>
+          </div>
+          <p style="font-size: 13px; color: var(--text-muted);">建好之後從 <code>mock/db.js</code> 開始寫，塞入假資料到 localStorage，確認可以讀到後再開始做第一個頁面。建議從 <code>Layout.jsx</code> + <code>Home.jsx</code> 開始，先把導覽跑通，再逐頁實作。</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 16px 20px;">
+      <div style="font-size: 12px; font-weight: 700; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">遇到問題怎麼辦</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px;">
+        <div><div style="font-weight: 700; margin-bottom: 4px;">技術問題</div><div style="color: var(--text-muted); line-height: 1.7;">直接在 Issue 下方留言，說明卡在哪裡。Sam 看到會回應。</div></div>
+        <div><div style="font-weight: 700; margin-bottom: 4px;">規格看不懂</div><div style="color: var(--text-muted); line-height: 1.7;">先對照線框稿，畫面通常比文字更清楚。還是不懂再留言。</div></div>
+        <div><div style="font-weight: 700; margin-bottom: 4px;">線框稿和規格書有出入</div><div style="color: var(--text-muted); line-height: 1.7;">以規格書文字為準，線框稿是視覺參考，不是最終定案。</div></div>
+        <div><div style="font-weight: 700; margin-bottom: 4px;">不確定要不要做某功能</div><div style="color: var(--text-muted); line-height: 1.7;">看任務清單的標記——「必做」先做，「選做」有時間再說。</div></div>
+      </div>
+    </div>
+  </div>
+
   <!-- TOC -->
   <div class="toc">
-    <div class="toc-title">目錄</div>
+    <div class="toc-title">目錄（詳細規格）</div>
     <ol>
+      <li><a href="#start">從這裡開始（工程師入門指引）</a></li>
       <li><a href="#overview">專案概述與 POC 目標</a></li>
       <li><a href="#scope">POC 範圍界定</a></li>
       <li><a href="#data">資料結構規格</a></li>
