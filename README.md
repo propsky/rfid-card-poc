@@ -6,7 +6,7 @@
 
 ## 📄 規格書
 
-👉 **[點此開啟完整規格書](https://你的帳號.github.io/你的repo名稱/)**
+👉 **[點此開啟完整規格書](https://propsky.github.io/rfid-card-poc/)**
 
 規格書包含：資料結構、API 端點、前端模組說明、以及完整工作拆解。
 
