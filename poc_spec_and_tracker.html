@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>儲值卡雲端備份 POC — 規格書與工作追蹤</title>
+<style>
+  :root {
+    --bg: #F8F7F4;
+    --surface: #FFFFFF;
+    --surface2: #F1EFE8;
+    --border: #D3D1C7;
+    --border-light: #E8E6DF;
+    --text: #1A1917;
+    --text-muted: #5F5E5A;
+    --text-hint: #888780;
+    --accent: #185FA5;
+    --accent-light: #E6F1FB;
+    --accent-mid: #378ADD;
+    --gold: #BA7517;
+    --gold-light: #FAEEDA;
+    --green: #3B6D11;
+    --green-light: #EAF3DE;
+    --red: #A32D2D;
+    --red-light: #FCEBEB;
+    --teal: #0F6E56;
+    --teal-light: #E1F5EE;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', 'Noto Serif TC', serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+
+  /* Header */
+  .doc-header {
+    border-bottom: 2px solid var(--text);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+  }
+
+  .doc-meta {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .doc-title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .doc-subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .badge {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .badge-blue { background: var(--accent-light); color: var(--accent); }
+  .badge-gold { background: var(--gold-light); color: var(--gold); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-label {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Info box */
+  .infobox {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+
+  .infobox-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+
+  /* Stack layout */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Spec table */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .spec-table th {
+    text-align: left;
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .spec-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    font-size: 14px;
+  }
+
+  .spec-table tr:last-child td { border-bottom: none; }
+
+  .spec-table .field-name {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-light);
+    border-radius: 3px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  /* Module card */
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .module-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .module-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .module-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .module-tech {
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  .module-body {
+    padding: 14px 18px;
+  }
+
+  .feature-list {
+    list-style: none;
+    font-size: 13.5px;
+  }
+
+  .feature-list li {
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--border-light);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .feature-list li:last-child { border-bottom: none; }
+
+  .feature-mark {
+    font-size: 11px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  .must { color: var(--red); }
+  .nice { color: var(--gold); }
+
+  /* Task table */
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .task-table th {
+    text-align: left;
+    font-size: 10px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    padding: 8px 10px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .task-table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+  }
+
+  .task-table tr:last-child td { border-bottom: none; }
+  .task-table tr.group-header td {
+    background: var(--surface2);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .priority-must {
+    background: var(--red-light);
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+  }
+
+  .priority-nice {
+    background: var(--gold-light);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+  }
+
+  .priority-bonus {
+    background: var(--purple-light);
+    color: var(--purple);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+  }
+
+  .hours {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .hours-total {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Checkbox */
+  .cb { display: flex; align-items: center; justify-content: center; }
+  .cb input[type=checkbox] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  /* Summary band */
+  .summary-band {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .summary-card {
+    flex: 1;
+    min-width: 140px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .summary-num {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Constraint box */
+  .constraint {
+    background: var(--gold-light);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    color: #5a3a08;
+    margin-bottom: 12px;
+  }
+
+  /* API spec */
+  .api-endpoint {
+    background: #1A1917;
+    color: #C0BFBA;
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 2;
+    margin-bottom: 12px;
+  }
+
+  .api-method {
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .method-get { color: #5DCAA5; }
+  .method-post { color: #FAC775; }
+  .method-put { color: #85B7EB; }
+
+  .api-path { color: #FFFFFF; }
+  .api-desc { color: #888780; margin-left: 12px; }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .page { padding: 24px 20px; }
+  }
+
+  /* Accordion (print-friendly — just show all) */
+  details { margin-bottom: 4px; }
+  details summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 4px 0;
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary::before { content: '▾ '; }
+  details summary::before { content: '▸ '; }
+
+  .note {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border-light); margin: 32px 0; }
+
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+
+  .toc-title {
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-hint);
+    margin-bottom: 10px;
+  }
+
+  .toc ol {
+    padding-left: 20px;
+    font-size: 14px;
+  }
+
+  .toc li { margin: 4px 0; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="doc-meta">技術規格書 · POC 版本 · 擎天有限公司內部文件</div>
+    <div class="doc-title">儲值卡雲端備份與補發機制<br>POC 開發規格書</div>
+    <div class="doc-subtitle">供 Junior 前端工程師使用 — 含後端簡易實作指引</div>
+    <div class="badge-row">
+      <span class="badge badge-blue">TAGE 2026 展後洽談</span>
+      <span class="badge badge-gold">翔飛達 × 擎天</span>
+      <span class="badge badge-green">Draft v1.0 · 2026-05</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">目錄</div>
+    <ol>
+      <li><a href="#overview">專案概述與 POC 目標</a></li>
+      <li><a href="#scope">POC 範圍界定</a></li>
+      <li><a href="#data">資料結構規格</a></li>
+      <li><a href="#api">API 端點規格</a></li>
+      <li><a href="#modules">前端模組規格</a></li>
+      <li><a href="#tasks">工作拆解與建議時數（兩個 Milestone）</a></li>
+      <li><a href="#constraints">技術限制與注意事項</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-label">Section 01</div>
+    <div class="section-title">專案概述與 POC 目標</div>
+
+    <div class="infobox">
+      <div class="infobox-title">背景</div>
+      <p>翔飛達（洗車設備商）現有 RFID 儲值卡系統資料僅存於實體卡，卡損即資料全滅，補發完全靠客人口述，無法稽核。本 POC 目標是驗證「交易資料即時上傳雲端 → 業者後台可查 → 補發有憑有據」這條路徑是否技術可行，並作為對翔飛達展示用的 Demo。</p>
+    </div>
+
+    <div class="grid-2" style="margin-top: 16px;">
+      <div class="infobox">
+        <div class="infobox-title">POC 成功標準</div>
+        <ul style="padding-left: 16px; font-size: 14px;">
+          <li>模擬一筆儲值 / 消費交易，資料出現在後台</li>
+          <li>後台可查詢該卡交易紀錄與餘額</li>
+          <li>補發流程走完五個步驟（查詢→確認→補發→舊卡停用）</li>
+        </ul>
+      </div>
+      <div class="infobox">
+        <div class="infobox-title">不在 POC 範圍內</div>
+        <ul style="padding-left: 16px; font-size: 14px;">
+          <li>實體 RFID 硬體整合（模擬即可）</li>
+          <li>真正的 WiFi IoT 卡（用 API 模擬上傳）</li>
+          <li>帳號系統 / 登入驗證</li>
+          <li>多租戶（multi-tenant）架構</li>
+          <li>生產環境部署與資安強化</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SCOPE -->
+  <div class="section" id="scope">
+    <div class="section-label">Section 02</div>
+    <div class="section-title">POC 範圍界定</div>
+
+    <div style="overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border-light);">
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">功能區塊</th>
+            <th style="width: 15%;">In / Out</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>模擬設備上傳</td>
+            <td><span class="badge badge-green">IN</span></td>
+            <td>提供一個「模擬終端」頁面，可手動輸入卡號 + 交易類型 + 金額，送出後呼叫後端 API，模擬 IoT 卡上傳動作</td>
+          </tr>
+          <tr>
+            <td>後台查詢介面</td>
+            <td><span class="badge badge-green">IN</span></td>
+            <td>輸入卡號，列出該卡完整交易紀錄與目前餘額</td>
+          </tr>
+          <tr>
+            <td>補發流程</td>
+            <td><span class="badge badge-green">IN</span></td>
+            <td>五步驟補發：查詢→身分確認→餘額確認→補發→停用舊卡（全部 UI 流程，後端紀錄狀態）</td>
+          </tr>
+          <tr>
+            <td>會員資料綁定</td>
+            <td><span class="badge badge-green">IN</span></td>
+            <td>辦卡時填入姓名 / 電話 / 生日，與卡號做綁定（POC 無驗證）</td>
+          </tr>
+          <tr>
+            <td>設備管理</td>
+            <td><span class="badge badge-gold">簡化</span></td>
+            <td>僅需能新增終端名稱 + 類型，不需即時上線監控</td>
+          </tr>
+          <tr>
+            <td>帳號登入</td>
+            <td><span class="badge" style="background:#F1EFE8; color:#888780;">OUT</span></td>
+            <td>POC 無需驗證，直接進入後台</td>
+          </tr>
+          <tr>
+            <td>IoT 硬體</td>
+            <td><span class="badge" style="background:#F1EFE8; color:#888780;">OUT</span></td>
+            <td>用「模擬上傳」頁面代替</td>
+          </tr>
+          <tr>
+            <td>電子發票 / 第三方支付</td>
+            <td><span class="badge" style="background:#F1EFE8; color:#888780;">OUT</span></td>
+            <td>不在此次範圍</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. DATA -->
+  <div class="section" id="data">
+    <div class="section-label">Section 03</div>
+    <div class="section-title">資料結構規格</div>
+
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">POC 後端使用 JSON 檔案或 SQLite 儲存即可。以下為各資料表欄位定義。</p>
+
+    <div class="module-card" style="margin-bottom: 16px;">
+      <div class="module-header">
+        <div class="module-icon" style="background: var(--accent-light); color: var(--accent);">💳</div>
+        <div>
+          <div class="module-title">cards — 儲值卡主表</div>
+          <div class="module-tech">關聯：members.id, transactions.card_uid</div>
+        </div>
+      </div>
+      <div class="module-body">
+        <div style="overflow: hidden; border-radius: 6px; border: 1px solid var(--border-light);">
+          <table class="spec-table">
+            <thead><tr><th>欄位</th><th>型態</th><th>必填</th><th>說明</th></tr></thead>
+            <tbody>
+              <tr><td><span class="field-name">uid</span></td><td>string</td><td>✓</td><td>RFID 卡片唯一識別碼（模擬用隨機字串即可）</td></tr>
+              <tr><td><span class="field-name">member_id</span></td><td>string | null</td><td>—</td><td>綁定會員 ID，辦卡時填入</td></tr>
+              <tr><td><span class="field-name">balance</span></td><td>integer</td><td>✓</td><td>目前餘額（以元為單位，整數）</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>enum</td><td>✓</td><td>active / suspended（停用後不可再消費）</td></tr>
+              <tr><td><span class="field-name">created_at</span></td><td>datetime</td><td>✓</td><td>建立時間</td></tr>
+              <tr><td><span class="field-name">suspended_at</span></td><td>datetime | null</td><td>—</td><td>停用時間（補發流程最後一步寫入）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-card" style="margin-bottom: 16px;">
+      <div class="module-header">
+        <div class="module-icon" style="background: var(--teal-light); color: var(--teal);">👤</div>
+        <div>
+          <div class="module-title">members — 會員主表</div>
+          <div class="module-tech">關聯：cards.member_id</div>
+        </div>
+      </div>
+      <div class="module-body">
+        <div style="overflow: hidden; border-radius: 6px; border: 1px solid var(--border-light);">
+          <table class="spec-table">
+            <thead><tr><th>欄位</th><th>型態</th><th>必填</th><th>說明</th></tr></thead>
+            <tbody>
+              <tr><td><span class="field-name">id</span></td><td>string</td><td>✓</td><td>UUID</td></tr>
+              <tr><td><span class="field-name">name</span></td><td>string</td><td>✓</td><td>姓名（補發身分驗證用）</td></tr>
+              <tr><td><span class="field-name">phone</span></td><td>string</td><td>✓</td><td>電話（補發身分驗證用）</td></tr>
+              <tr><td><span class="field-name">birthday</span></td><td>date</td><td>✓</td><td>生日（YYYY-MM-DD，補發身分驗證第三因子）</td></tr>
+              <tr><td><span class="field-name">created_at</span></td><td>datetime</td><td>✓</td><td>建立時間</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-card" style="margin-bottom: 16px;">
+      <div class="module-header">
+        <div class="module-icon" style="background: var(--gold-light); color: var(--gold);">📋</div>
+        <div>
+          <div class="module-title">transactions — 交易紀錄表</div>
+          <div class="module-tech">每筆交易 append-only，不修改歷史紀錄</div>
+        </div>
+      </div>
+      <div class="module-body">
+        <div style="overflow: hidden; border-radius: 6px; border: 1px solid var(--border-light);">
+          <table class="spec-table">
+            <thead><tr><th>欄位</th><th>型態</th><th>必填</th><th>說明</th></tr></thead>
+            <tbody>
+              <tr><td><span class="field-name">id</span></td><td>string</td><td>✓</td><td>UUID</td></tr>
+              <tr><td><span class="field-name">card_uid</span></td><td>string</td><td>✓</td><td>對應 cards.uid</td></tr>
+              <tr><td><span class="field-name">terminal_id</span></td><td>string</td><td>✓</td><td>來源終端 ID</td></tr>
+              <tr><td><span class="field-name">type</span></td><td>enum</td><td>✓</td><td>topup（儲值）/ consume（消費）/ reissue（補發）</td></tr>
+              <tr><td><span class="field-name">amount</span></td><td>integer</td><td>✓</td><td>金額（正整數，type 決定加減）</td></tr>
+              <tr><td><span class="field-name">balance_after</span></td><td>integer</td><td>✓</td><td>交易後餘額（快照，查詢時不需重算）</td></tr>
+              <tr><td><span class="field-name">created_at</span></td><td>datetime</td><td>✓</td><td>交易時間戳記</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-header">
+        <div class="module-icon" style="background: var(--purple-light); color: var(--purple);">🖥️</div>
+        <div>
+          <div class="module-title">terminals — 終端設備表</div>
+          <div class="module-tech">POC 只需基本識別，不做即時監控</div>
+        </div>
+      </div>
+      <div class="module-body">
+        <div style="overflow: hidden; border-radius: 6px; border: 1px solid var(--border-light);">
+          <table class="spec-table">
+            <thead><tr><th>欄位</th><th>型態</th><th>必填</th><th>說明</th></tr></thead>
+            <tbody>
+              <tr><td><span class="field-name">id</span></td><td>string</td><td>✓</td><td>UUID</td></tr>
+              <tr><td><span class="field-name">name</span></td><td>string</td><td>✓</td><td>顯示名稱（例：1號入口加值機）</td></tr>
+              <tr><td><span class="field-name">type</span></td><td>enum</td><td>✓</td><td>topup_terminal / payment_terminal</td></tr>
+              <tr><td><span class="field-name">location</span></td><td>string</td><td>—</td><td>安裝地點描述</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. API -->
+  <div class="section" id="api">
+    <div class="section-label">Section 04</div>
+    <div class="section-title">API 端點規格</div>
+
+    <div class="constraint">
+      POC 後端使用 <strong>Python + FastAPI</strong>。資料存 SQLite（搭配 <code>aiosqlite</code> 或直接用同步 <code>sqlite3</code> 標準庫）即可，不需要 PostgreSQL 或 MySQL。所有回應格式為 JSON。建議安裝：<code>fastapi uvicorn[standard] aiosqlite python-multipart</code>。
+    </div>
+
+    <div class="api-endpoint">
+      <div><span class="api-method method-post">POST</span><span class="api-path">/api/transactions/upload</span><span class="api-desc"># 模擬 IoT 卡上傳一筆交易</span></div>
+      <div><span class="api-method method-get">GET</span><span class="api-path"> /api/cards/{uid}</span><span class="api-desc"># 查詢卡片狀態與目前餘額</span></div>
+      <div><span class="api-method method-get">GET</span><span class="api-path"> /api/cards/{uid}/transactions</span><span class="api-desc"># 查詢該卡所有交易紀錄</span></div>
+      <div><span class="api-method method-post">POST</span><span class="api-path">/api/cards</span><span class="api-desc"># 新增卡片（辦卡）</span></div>
+      <div><span class="api-method method-post">POST</span><span class="api-path">/api/members</span><span class="api-desc"># 新增會員</span></div>
+      <div><span class="api-method method-put">PUT</span><span class="api-path"> /api/cards/{uid}/bind</span><span class="api-desc"># 將卡片綁定至會員</span></div>
+      <div><span class="api-method method-post">POST</span><span class="api-path">/api/cards/{uid}/reissue</span><span class="api-desc"># 補發流程：驗證身分 + 建新卡 + 停用舊卡</span></div>
+      <div><span class="api-method method-get">GET</span><span class="api-path"> /api/terminals</span><span class="api-desc"># 列出所有終端</span></div>
+      <div><span class="api-method method-post">POST</span><span class="api-path">/api/terminals</span><span class="api-desc"># 新增終端</span></div>
+    </div>
+
+    <p class="note">補發端點（reissue）接收 JSON body：{ name, phone, birthday, new_card_uid }。後端比對 member 資料，三者全符合才執行補發，否則回傳 HTTP 403。FastAPI 可用 Pydantic BaseModel 定義這些欄位，自動驗證型態。</p>
+  </div>
+
+  <!-- 5. MODULES -->
+  <div class="section" id="modules">
+    <div class="section-label">Section 05</div>
+    <div class="section-title">前端模組規格</div>
+
+    <div class="constraint">
+      技術建議：React（Vite）+ React Router。UI 元件庫不限定，Tailwind 或 plain CSS 皆可。不要求視覺美觀，但流程必須走通。FastAPI 後端需加 <code>CORSMiddleware</code>，允許 localhost:5173（Vite dev server）。
+    </div>
+
+    <div class="grid-2">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon" style="background: var(--accent-light); color: var(--accent);">📡</div>
+          <div>
+            <div class="module-title">模擬終端頁面</div>
+            <div class="module-tech">route: /simulator</div>
+          </div>
+        </div>
+        <div class="module-body">
+          <ul class="feature-list">
+            <li><span class="feature-mark must">必</span>下拉選擇終端（terminal_id）</li>
+            <li><span class="feature-mark must">必</span>輸入卡號 UID</li>
+            <li><span class="feature-mark must">必</span>選擇交易類型：儲值 / 消費</li>
+            <li><span class="feature-mark must">必</span>輸入金額，送出呼叫 POST /transactions/upload</li>
+            <li><span class="feature-mark must">必</span>顯示交易結果（成功 / 失敗 / 餘額不足）</li>
+            <li><span class="feature-mark nice">選</span>顯示目前卡片餘額（送出後即時更新）</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon" style="background: var(--teal-light); color: var(--teal);">💳</div>
+          <div>
+            <div class="module-title">辦卡 / 會員綁定</div>
+            <div class="module-tech">route: /cards/new</div>
+          </div>
+        </div>
+        <div class="module-body">
+          <ul class="feature-list">
+            <li><span class="feature-mark must">必</span>輸入卡號 UID（模擬掃卡）</li>
+            <li><span class="feature-mark must">必</span>勾選「是否登記會員」</li>
+            <li><span class="feature-mark must">必</span>若登記：輸入姓名 / 電話 / 生日</li>
+            <li><span class="feature-mark must">必</span>輸入初始儲值金額</li>
+            <li><span class="feature-mark must">必</span>送出後顯示建卡成功確認</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon" style="background: var(--gold-light); color: var(--gold);">🔍</div>
+          <div>
+            <div class="module-title">交易查詢頁面</div>
+            <div class="module-tech">route: /cards/:uid</div>
+          </div>
+        </div>
+        <div class="module-body">
+          <ul class="feature-list">
+            <li><span class="feature-mark must">必</span>輸入卡號，顯示餘額 + 卡片狀態</li>
+            <li><span class="feature-mark must">必</span>列出完整交易紀錄（時間、類型、金額、交易後餘額）</li>
+            <li><span class="feature-mark must">必</span>顯示綁定會員姓名（若有）</li>
+            <li><span class="feature-mark nice">選</span>依日期區間篩選</li>
+            <li><span class="feature-mark nice">選</span>顯示停用標記與停用時間</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon" style="background: var(--red-light); color: var(--red);">🔄</div>
+          <div>
+            <div class="module-title">補發流程頁面</div>
+            <div class="module-tech">route: /cards/:uid/reissue</div>
+          </div>
+        </div>
+        <div class="module-body">
+          <ul class="feature-list">
+            <li><span class="feature-mark must">必</span>Step 1：輸入舊卡號，查詢是否存在</li>
+            <li><span class="feature-mark must">必</span>Step 2：輸入姓名 / 電話 / 生日驗證身分</li>
+            <li><span class="feature-mark must">必</span>Step 3：顯示查詢到的餘額，業者確認</li>
+            <li><span class="feature-mark must">必</span>Step 4：輸入新卡 UID，送出補發</li>
+            <li><span class="feature-mark must">必</span>Step 5：顯示完成訊息，舊卡已停用</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon" style="background: var(--purple-light); color: var(--purple);">🖥️</div>
+          <div>
+            <div class="module-title">終端管理（簡化）</div>
+            <div class="module-tech">route: /terminals</div>
+          </div>
+        </div>
+        <div class="module-body">
+          <ul class="feature-list">
+            <li><span class="feature-mark must">必</span>列出所有終端（名稱、類型、ID）</li>
+            <li><span class="feature-mark must">必</span>新增終端（名稱 / 類型 / 地點）</li>
+            <li><span class="feature-mark nice">選</span>顯示各終端最後一筆交易時間</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon" style="background: var(--surface2); color: var(--text-muted);">🏠</div>
+          <div>
+            <div class="module-title">後台首頁 / 導航</div>
+            <div class="module-tech">route: /</div>
+          </div>
+        </div>
+        <div class="module-body">
+          <ul class="feature-list">
+            <li><span class="feature-mark must">必</span>側邊導覽列，連結各功能頁</li>
+            <li><span class="feature-mark nice">選</span>首頁顯示總卡數、總交易數（summary 卡片）</li>
+            <li><span class="feature-mark nice">選</span>近期交易列表（最新 10 筆）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 12px; display: flex; gap: 16px; font-size: 12px;">
+      <span><span class="feature-mark must" style="font-size: 12px;">必</span> = 必須完成（POC demo 必要）</span>
+      <span><span class="feature-mark nice" style="font-size: 12px;">選</span> = 時間允許再做</span>
+    </div>
+  </div>
+
+  <!-- 6. TASKS -->
+  <div class="section" id="tasks">
+    <div class="section-label">Section 06</div>
+    <div class="section-title">工作拆解與建議時數</div>
+
+    <div class="constraint">
+      <strong>前端先行策略：</strong>Milestone 1 全部在前端完成，用 mock data（寫死在 JS 的假資料）跑通所有畫面與流程，不依賴後端即可 demo。Milestone 2 才實作 FastAPI 後端，最後換掉 mock 層接真實 API。兩個 milestone 完全獨立，可以分開交件。
+    </div>
+
+    <!-- Milestone 1 label -->
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px; margin-top: 8px;">
+      <div style="background: var(--accent); color: white; font-size: 11px; font-family: 'Courier New', monospace; font-weight: 700; padding: 4px 12px; border-radius: 4px; letter-spacing: 0.06em;">MILESTONE 1 — 前端 Demo 版</div>
+      <div style="font-size: 13px; color: var(--text-muted);">全程用 mock data，可直接 demo 給客戶看</div>
+    </div>
+
+    <div style="overflow: hidden; border-radius: var(--radius); border: 2px solid var(--accent-mid); margin-bottom: 28px;">
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th style="width: 36px;">✓</th>
+            <th>任務描述</th>
+            <th style="width: 70px;">估時</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="group-header">
+            <td colspan="3">📦 Phase 1 — 專案初始化與 Mock 層建立</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>Vite + React 專案初始化，安裝 React Router，建立基本資料夾結構（pages/ / components/ / mock/）</td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>建立 <code>mock/db.js</code>：用 JS 物件定義初始假資料（3 張卡含交易紀錄、2 個終端、2 個會員），存入 <code>localStorage</code> 讓資料在頁面重整後不消失</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>建立 <code>mock/api.js</code>：封裝所有假 API 函式（getCard / getTransactions / uploadTransaction / reissueCard 等），模擬非同步行為（加短暫 delay）。<strong>重點：前端頁面只呼叫這個檔案，未來換真實 API 只改這一層</strong></td>
+            <td class="hours">2 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>建立共用 Layout 元件：側邊導覽列（含各功能頁連結）+ 主內容區域</td>
+            <td class="hours">1 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">📡 Phase 2 — 模擬終端頁面（/simulator）</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>下拉選擇終端 → 輸入卡號 UID → 選擇交易類型（儲值 / 消費）→ 輸入金額 → 送出</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>顯示交易結果：成功顯示新餘額、失敗顯示原因（餘額不足 / 卡片停用 / 卡號不存在）</td>
+            <td class="hours">1 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">💳 Phase 3 — 辦卡 / 會員綁定（/cards/new）</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>輸入卡號 UID + 初始儲值金額，勾選「是否登記會員」後條件顯示姓名 / 電話 / 生日欄位</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>送出後寫入 mock db，顯示建卡成功確認畫面（卡號 + 初始餘額）</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">🔍 Phase 4 — 交易查詢頁面（/cards/:uid）</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>輸入卡號 → 顯示卡片狀態（active / suspended）+ 目前餘額 + 綁定會員姓名（若有）</td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>列出完整交易紀錄表格：時間、類型（儲值 / 消費 / 補發）、金額、交易後餘額</td>
+            <td class="hours">1 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">🔄 Phase 5 — 補發流程頁面（/reissue）— 核心 Demo</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>Step 1：輸入舊卡號，mock api 回傳卡片是否存在（不存在顯示錯誤）</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>Step 2：身分驗證表單（姓名 / 電話 / 生日），mock api 比對是否符合，不符合顯示驗證失敗</td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>Step 3：顯示查詢到的餘額，業者點「確認補發」按鈕</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>Step 4：輸入新卡 UID，送出補發（mock：新卡餘額 = 舊卡餘額，舊卡 status 改為 suspended）</td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>Step 5：完成畫面，顯示新卡號 + 補發餘額 + 「舊卡 XXXX 已停用」確認訊息</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">🖥️ Phase 6 — 終端管理（/terminals）</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>列出所有終端（名稱、類型、ID），含新增終端表單，送出寫入 mock db</td>
+            <td class="hours">1 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">🧪 Phase 7 — Demo 走查與收尾</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>完整走一遍 demo 腳本：新增終端 → 辦卡（含會員）→ 模擬儲值 → 模擬消費 → 查詢紀錄 → 補發流程 → 確認舊卡停用。確認所有 mock 資料前後一致</td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>邊界條件確認：餘額不足消費、停用卡消費、補發身分不符，錯誤訊息是否清楚易懂（面向業者，非技術用語）</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>預先在 mock db 塞好一份「乾淨的 demo 用種子資料」，讓 demo 時有現成資料可以展示，不需要從零開始輸入</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- M1 summary -->
+    <div class="summary-band" style="margin-bottom: 32px;">
+      <div class="summary-card">
+        <div class="summary-num" style="color: var(--accent);">~17 h</div>
+        <div class="summary-label">Milestone 1 總時數</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num" style="color: var(--teal);">2–3 週</div>
+        <div class="summary-label">Part-time 預估（每週 6–8h）</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num" style="color: var(--green);">✓</div>
+        <div class="summary-label">交件後可立即 Demo</div>
+      </div>
+    </div>
+
+    <!-- Milestone 2 label -->
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+      <div style="background: var(--teal); color: white; font-size: 11px; font-family: 'Courier New', monospace; font-weight: 700; padding: 4px 12px; border-radius: 4px; letter-spacing: 0.06em;">MILESTONE 2 — 後端接入（Python + FastAPI）</div>
+      <div style="font-size: 13px; color: var(--text-muted);">接完後 demo 資料改由真實 SQLite 提供</div>
+    </div>
+
+    <div style="overflow: hidden; border-radius: var(--radius); border: 2px solid var(--teal); margin-bottom: 28px;">
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th style="width: 36px;">✓</th>
+            <th>任務描述</th>
+            <th style="width: 70px;">估時</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="group-header">
+            <td colspan="3">🛠 Phase 8 — FastAPI 專案建立</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>建立 Python venv，安裝 <code>fastapi uvicorn[standard] aiosqlite</code>，建立資料夾結構（main.py / database.py / routers/ / models/），加入 <code>CORSMiddleware</code> 允許 localhost:5173</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>建立 SQLite schema 初始化腳本（cards / members / transactions / terminals），塞入與 Milestone 1 相同結構的種子資料</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">🔌 Phase 9 — API 端點實作</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>POST /api/transactions/upload — 含餘額更新邏輯（消費餘額不足回傳 400，停用卡回傳 400）</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>GET /api/cards/{uid} 與 GET /api/cards/{uid}/transactions</td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>POST /api/members、POST /api/cards、PUT /api/cards/{uid}/bind</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>POST /api/cards/{uid}/reissue — 身分比對 + 建新卡 + 複製餘額 + 停用舊卡，用 <code>with conn:</code> 確保原子性</td>
+            <td class="hours">2 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>GET / POST /api/terminals</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>用 FastAPI 自動生成的 <code>/docs</code>（Swagger UI）逐一測試所有端點，確認回傳格式與狀態碼正確</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">🔗 Phase 10 — 前端換掉 Mock 層</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>在前端建立 <code>api/client.js</code>（fetch wrapper），設定 base URL 指向 FastAPI，替換 <code>mock/api.js</code> 的呼叫來源。<strong>因為 Milestone 1 的 mock 層已隔離，這一步理論上只改一個檔案</strong></td>
+            <td class="hours">1 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>整合測試：完整走一遍 demo 腳本，確認前後端資料一致、錯誤處理正確</td>
+            <td class="hours">1.5 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>README 更新：加入後端啟動指令（<code>uvicorn main:app --reload</code>）與前後端同時啟動方式</td>
+            <td class="hours">0.5 h</td>
+          </tr>
+
+          <tr class="group-header">
+            <td colspan="3">✨ Optional — 加分項（時間允許）</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>後台首頁：呼叫後端取得總卡數 / 總交易數 summary + 近期 10 筆交易</td>
+            <td class="hours" style="color: var(--gold);">2 h</td>
+          </tr>
+          <tr>
+            <td class="cb"><input type="checkbox"></td>
+            <td>交易查詢加入日期區間篩選（後端加 query param）</td>
+            <td class="hours" style="color: var(--gold);">1 h</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- M2 summary -->
+    <div class="summary-band">
+      <div class="summary-card">
+        <div class="summary-num" style="color: var(--teal);">~14 h</div>
+        <div class="summary-label">Milestone 2 總時數</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num" style="color: var(--accent);">~31 h</div>
+        <div class="summary-label">兩個 Milestone 合計</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num" style="color: var(--gold);">+3 h</div>
+        <div class="summary-label">選做加分項</div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top: 12px;">※ Part-time 每週投入 6–8 小時：Milestone 1 約 2–3 週可交件 demo，Milestone 2 再加 2 週完成後端接入。兩個 milestone 間隔期間你可以先拿前端去推進業務。</p>
+  </div>
+
+  <!-- 7. CONSTRAINTS -->
+  <div class="section" id="constraints">
+    <div class="section-label">Section 07</div>
+    <div class="section-title">技術限制與注意事項</div>
+
+    <div class="grid-2">
+      <div class="infobox">
+        <div class="infobox-title">後端注意事項（FastAPI）</div>
+        <ul style="padding-left: 16px; font-size: 14px; line-height: 2;">
+          <li>補發操作（reissue）必須是原子性操作：用 <code>with conn:</code> 包住所有 SQLite 操作，任何步驟失敗自動 rollback</li>
+          <li>交易紀錄 append-only，不可修改或刪除歷史紀錄</li>
+          <li>餘額快照（balance_after）每筆交易都要寫入，不要每次重算</li>
+          <li>消費時若卡片 status 為 suspended，必須拒絕並 raise <code>HTTPException(status_code=400)</code></li>
+          <li>FastAPI 自動生成 <code>/docs</code>（Swagger UI），可直接用來測試所有 API，比 Postman 方便</li>
+          <li>Pydantic BaseModel 定義所有 request / response schema，型態錯誤會自動回傳 422</li>
+        </ul>
+      </div>
+      <div class="infobox">
+        <div class="infobox-title">前端注意事項</div>
+        <ul style="padding-left: 16px; font-size: 14px; line-height: 2;">
+          <li>補發流程為多步驟 wizard，狀態需用 state 管理（React useState 即可），不用 Redux</li>
+          <li>所有 API 錯誤都要顯示給使用者看，不能 silent fail</li>
+          <li>卡號 UID 為 string，不要用 parseInt 處理</li>
+          <li>金額一律以「元」整數顯示，不要出現小數點</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="infobox" style="margin-top: 16px;">
+      <div class="infobox-title">交件與驗收標準</div>
+      <p style="font-size: 14px;">驗收時需要現場（或錄影）走完以下完整流程一次：<br>
+      <strong>建立終端 → 辦卡（含會員登記）→ 儲值 → 消費 → 查詢餘額與交易紀錄 → 補發流程（含身分驗證）→ 確認舊卡停用</strong>。<br>
+      所有步驟無錯誤、資料前後一致，即視為通過。</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <hr>
+  <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-hint); font-family: 'Courier New', monospace;">
+    <span>擎天有限公司 · Propsky Co., Ltd.</span>
+    <span>Draft v1.0 · 2026-05 · 僅供內部使用</span>
+  </div>
+
+</div>
+</body>
+</html>
